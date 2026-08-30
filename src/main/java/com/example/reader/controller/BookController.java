@@ -28,11 +28,11 @@ public class BookController {
 
     @GetMapping("/books")
     @ResponseBody
-    public IPage<Book> selectBook(Integer p) {
+    public IPage<Book> selectBook(Long categoryId, String order, Integer p) {
         if (p == null) {
             p = 1;
         }
-        IPage<Book> pageObject = bookService.paging(p, 10);
+        IPage<Book> pageObject = bookService.paging(categoryId, order, p, 10);
         return pageObject;
     }
 }
