@@ -3,8 +3,10 @@ package com.example.reader.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.reader.entity.Book;
 import com.example.reader.entity.Category;
+import com.example.reader.entity.Evaluation;
 import com.example.reader.service.BookService;
 import com.example.reader.service.CategoryService;
+import com.example.reader.service.EvaluationService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +21,8 @@ public class BookController {
     private CategoryService categoryService;
     @Resource
     private BookService bookService;
+    @Resource
+    private EvaluationService evaluationService;
 
     @GetMapping("/category/list")
     @ResponseBody
@@ -42,5 +46,12 @@ public class BookController {
     public Book getBookDetail(@PathVariable("id") Long id) {
         Book book = bookService.selectById(id);
         return book;
+    }
+
+    @GetMapping("evaluation")
+    @ResponseBody
+    public List<Evaluation> getEvaluationByBookId(Long id) {
+        List<Evaluation> list = evaluationService.selectByBookId(id);
+        return list;
     }
 }
