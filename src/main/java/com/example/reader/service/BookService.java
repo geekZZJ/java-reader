@@ -1,0 +1,14 @@
+package com.example.reader.service;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.example.reader.entity.Book;
+
+public interface BookService {
+    /**
+     *
+     * @param page 页号
+     * @param rows 每页数量
+     * @return 分页对象
+     */
+    public IPage<Book> paging(Integer page, Integer rows);
+}
