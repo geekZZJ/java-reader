@@ -2,7 +2,9 @@ package com.example.reader.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.reader.entity.Member;
+import com.example.reader.entity.MemberReadState;
 import com.example.reader.mapper.MemberMapper;
+import com.example.reader.mapper.MemberReadStateMapper;
 import com.example.reader.service.MemberService;
 import com.example.reader.service.exception.BusinessException;
 import com.example.reader.utils.MD5Utils;
@@ -19,6 +21,8 @@ import java.util.Random;
 public class MemberServiceImpl implements MemberService {
     @Resource
     private MemberMapper memberMapper;
+    @Resource
+    private MemberReadStateMapper memberReadStateMapper;
 
     public Member createMember(String username, String password, String nickname) {
         QueryWrapper<Member> queryWrapper = new QueryWrapper<Member>();
@@ -52,5 +56,13 @@ public class MemberServiceImpl implements MemberService {
             throw new BusinessException("M03", "密码错误");
         }
         return member;
+    }
+
+    public MemberReadState selectMemberReadState(Long memberId, Long bookId) {
+        QueryWrapper<MemberReadState> queryWrapper = new QueryWrapper<MemberReadState>();
+        queryWrapper.eq("book_id", bookId);
+        queryWrapper.eq("member_id", memberId);
+        MemberReadState memberReadState = memberReadStateMapper.selectOne(queryWrapper);
+        return memberReadState;
     }
 }
