@@ -1,8 +1,10 @@
 package com.example.reader.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.reader.entity.Evaluation;
 import com.example.reader.entity.Member;
 import com.example.reader.entity.MemberReadState;
+import com.example.reader.mapper.EvaluationMapper;
 import com.example.reader.mapper.MemberMapper;
 import com.example.reader.mapper.MemberReadStateMapper;
 import com.example.reader.service.MemberService;
@@ -24,6 +26,8 @@ public class MemberServiceImpl implements MemberService {
     private MemberMapper memberMapper;
     @Resource
     private MemberReadStateMapper memberReadStateMapper;
+    @Resource
+    private EvaluationMapper evaluationMapper;
 
     public Member createMember(String username, String password, String nickname) {
         QueryWrapper<Member> queryWrapper = new QueryWrapper<Member>();
@@ -85,5 +89,18 @@ public class MemberServiceImpl implements MemberService {
             memberReadStateMapper.updateById(memberReadState);
         }
         return memberReadState;
+    }
+
+    public Evaluation evaluate(Long memberId, Long bookId, Integer score, String content) {
+        Evaluation evaluation = new Evaluation();
+        evaluation.setMemberId(memberId);
+        evaluation.setBookId(bookId);
+        evaluation.setScore(score);
+        evaluation.setContent(content);
+        evaluation.setCreateTime(new Date());
+        evaluation.setState("enable");
+        evaluation.setEnjoy(0);
+        evaluationMapper.insert(evaluation);
+        return evaluation;
     }
 }
