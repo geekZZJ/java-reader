@@ -9,4 +9,6 @@ public interface MemberService {
     public Member checkLogin(String username, String password);
 
     public MemberReadState selectMemberReadState(Long memberId, Long bookId);
+
+    public MemberReadState updateMemberReadState(Long memberId, Long bookId, Integer readState);
 }
