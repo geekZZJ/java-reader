@@ -1,14 +1,17 @@
 package com.example.reader.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.reader.entity.Evaluation;
 import com.example.reader.entity.Member;
 import com.example.reader.entity.MemberReadState;
+import com.example.reader.mapper.EvaluationMapper;
 import com.example.reader.mapper.MemberMapper;
 import com.example.reader.mapper.MemberReadStateMapper;
 import com.example.reader.service.MemberService;
 import com.example.reader.service.exception.BusinessException;
 import com.example.reader.utils.MD5Utils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -23,6 +26,8 @@ public class MemberServiceImpl implements MemberService {
     private MemberMapper memberMapper;
     @Resource
     private MemberReadStateMapper memberReadStateMapper;
+    @Resource
+    private EvaluationMapper evaluationMapper;
 
     public Member createMember(String username, String password, String nickname) {
         QueryWrapper<Member> queryWrapper = new QueryWrapper<Member>();
@@ -58,11 +63,44 @@ public class MemberServiceImpl implements MemberService {
         return member;
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, readOnly = true)
     public MemberReadState selectMemberReadState(Long memberId, Long bookId) {
         QueryWrapper<MemberReadState> queryWrapper = new QueryWrapper<MemberReadState>();
         queryWrapper.eq("book_id", bookId);
         queryWrapper.eq("member_id", memberId);
         MemberReadState memberReadState = memberReadStateMapper.selectOne(queryWrapper);
         return memberReadState;
+    }
+
+    public MemberReadState updateMemberReadState(Long memberId, Long bookId, Integer readState) {
+        QueryWrapper<MemberReadState> queryWrapper = new QueryWrapper<MemberReadState>();
+        queryWrapper.eq("book_id", bookId);
+        queryWrapper.eq("member_id", memberId);
+        MemberReadState memberReadState = memberReadStateMapper.selectOne(queryWrapper);
+        if (memberReadState == null) {
+            memberReadState = new MemberReadState();
+            memberReadState.setMemberId(memberId);
+            memberReadState.setBookId(bookId);
+            memberReadState.setReadState(readState);
+            memberReadState.setCreateTime(new Date());
+            memberReadStateMapper.insert(memberReadState);
+        } else {
+            memberReadState.setReadState(readState);
+            memberReadStateMapper.updateById(memberReadState);
+        }
+        return memberReadState;
+    }
+
+    public Evaluation evaluate(Long memberId, Long bookId, Integer score, String content) {
+        Evaluation evaluation = new Evaluation();
+        evaluation.setMemberId(memberId);
+        evaluation.setBookId(bookId);
+        evaluation.setScore(score);
+        evaluation.setContent(content);
+        evaluation.setCreateTime(new Date());
+        evaluation.setState("enable");
+        evaluation.setEnjoy(0);
+        evaluationMapper.insert(evaluation);
+        return evaluation;
     }
 }

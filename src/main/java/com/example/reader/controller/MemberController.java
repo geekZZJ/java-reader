@@ -1,5 +1,6 @@
 package com.example.reader.controller;
 
+import com.example.reader.entity.Evaluation;
 import com.example.reader.entity.Member;
 import com.example.reader.service.MemberService;
 import com.example.reader.service.exception.BusinessException;
@@ -59,6 +60,39 @@ public class MemberController {
                 result.put("code", ex.getCode());
                 result.put("msg", ex.getMsg());
             }
+        }
+        return result;
+    }
+
+    @PostMapping("/update_read_state")
+    @ResponseBody
+    public Map updateReadState(Long memberId, Long bookId, Integer readState) {
+        Map result = new HashMap();
+        try {
+            memberService.updateMemberReadState(memberId, bookId, readState);
+            result.put("code", "0");
+            result.put("msg", "success");
+        } catch (BusinessException ex) {
+            ex.printStackTrace();
+            result.put("code", ex.getCode());
+            result.put("msg", ex.getMsg());
+        }
+        return result;
+    }
+
+    @PostMapping("/evaluate")
+    @ResponseBody
+    public Map evaluate(Long memberId, Long bookId, Integer score, String content) {
+        Map result = new HashMap();
+        try {
+            Evaluation ev = memberService.evaluate(memberId, bookId, score, content);
+            result.put("code", "0");
+            result.put("msg", "success");
+            result.put("evaluation", ev);
+        } catch (BusinessException ex) {
+            ex.printStackTrace();
+            result.put("code", ex.getCode());
+            result.put("msg", ex.getMsg());
         }
         return result;
     }
