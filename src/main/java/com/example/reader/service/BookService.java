@@ -19,4 +19,6 @@ public interface BookService {
      * @return
      */
     public Book selectById(Long bookId);
+
+    public void updateEvaluation();
 }
